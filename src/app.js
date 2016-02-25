@@ -4,7 +4,7 @@ var Vibe = require('ui/vibe');
 var Wakeup = require('wakeup');
 
 // Constants
-const POMODORO = 2;
+const POMODORO = 25;
 const GET_UP = 60;
 const SMALL_BREAK = 5;
 const LONG_BREAK = 15;

@@ -3,8 +3,8 @@
     "capabilities": [
         ""
     ],
-    "companyName": "unaimartinezrodriguez@gmail.com",
-    "longName": "js_test",
+    "companyName": "Unai Martinez",
+    "longName": "Little Health Helper",
     "projectType": "pebblejs",
     "resources": {
         "media": [
@@ -32,7 +32,7 @@
         ]
     },
     "sdkVersion": "3",
-    "shortName": "js_test",
+    "shortName": "LHH",
     "targetPlatforms": [
         "aplite",
         "basalt"
