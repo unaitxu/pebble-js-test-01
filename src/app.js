@@ -91,9 +91,35 @@ function wakeupSeconds(elementName) {
   }
 }
 
+function clearWakeup(elementName) {
+  var wakeElement = '';
+  switch(elementName) {
+    case 'Pomodoro':
+      pomodoroWakeup = 0;
+      wakeElement = 'pomodoroWakeupId';
+      break;
+    case 'GetUp':
+      getUpWakeup = 0;
+      wakeElement = 'getUpWakeupId';
+      break;
+    case 'Small':
+      smallBreakWakeup = 0;
+      wakeElement = 'smallBreakWakeupId';
+      break;
+    case 'Long':
+      longBreakWakeup = 0;
+      wakeElement = 'longBreakWakeupId';
+      break;
+  }
+  Wakeup.cancel(localStorage.getItem(wakeElement));
+  localStorage.removeItem(wakeElement);
+}
+
 function timer(constantTime, element, elementName) {
   if (checkWakeup(elementName) === 0) {
     createWakeup(constantTime, elementName);
+  } else {
+    clearWakeup(elementName);
   }
   setTimeout(function (){
     var secondsLeft = wakeupSeconds(elementName);
@@ -122,10 +148,10 @@ var main = new UI.Menu({
 });
 
 main.show();
+// Wakeup.cancel('all');
 
 var pomodoro = new UI.Card({
-  title: 'Pomodoro', 
-  subtitle: 'Click the middle button to start it'
+  title: 'Pomodoro'
 });
 
 var water = new UI.Menu({
@@ -185,8 +211,12 @@ pomodoro.on('click', 'select', function(e) {
 });
 
 pomodoro.on('show', function(e) {
-  if (checkWakeup('Pomodoro')) {
+  if (checkWakeup('Pomodoro') === 0) {
     timer(POMODORO, pomodoro, 'Pomodoro');
+    pomodoro.body('Click the middle button to stop');
+  } else {
+    pomodoro.subtitle('Click the middle button to start');
+    pomodoro.body('');
   }
 });
 
