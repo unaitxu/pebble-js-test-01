@@ -118,8 +118,6 @@ function clearWakeup(elementName) {
 function timer(constantTime, element, elementName) {
   if (checkWakeup(elementName) === 0) {
     createWakeup(constantTime, elementName);
-  } else {
-    clearWakeup(elementName);
   }
   setTimeout(function (){
     var secondsLeft = wakeupSeconds(elementName);
@@ -148,7 +146,7 @@ var main = new UI.Menu({
 });
 
 main.show();
-// Wakeup.cancel('all');
+Wakeup.cancel('all');
 
 var pomodoro = new UI.Card({
   title: 'Pomodoro'
@@ -189,7 +187,11 @@ main.on('select', function(e) {
 });
 
 getUp.on('click', 'select', function(e) {
-  timer(GET_UP, getUp, 'GetUp');
+  if (checkWakeup('GetUp') === 0) {
+    clearWakeup('GetUp');
+  } else {
+   timer(GET_UP, getUp, 'GetUp'); 
+  }
 });
 
 water.on('select', function(e) {
@@ -207,11 +209,15 @@ water.on('select', function(e) {
 });
 
 pomodoro.on('click', 'select', function(e) {
-  timer(POMODORO, pomodoro, 'Pomodoro');
+    if (checkWakeup('Pomodoro') === 0) {
+      clearWakeup('Pomodoro');
+    } else {
+     timer(POMODORO, pomodoro, 'Pomodoro'); 
+    }
 });
 
 pomodoro.on('show', function(e) {
-  if (checkWakeup('Pomodoro') === 0) {
+  if (checkWakeup('Pomodoro') !== 0) {
     timer(POMODORO, pomodoro, 'Pomodoro');
     pomodoro.body('Click the middle button to stop');
   } else {
