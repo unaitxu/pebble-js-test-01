@@ -16,7 +16,34 @@ var getUpWakeup = 0;
 var smallBreakWakeup = 0;
 var longBreakWakeup = 0;
 
-// functions
+// UI Variables
+
+var pomodoro = new UI.Card({
+  title: 'Pomodoro'
+});
+
+var water = new UI.Menu({
+  backgroundColor: 'black',
+  textColor: '#66d9ef',
+  highlightBackgroundColor: '#66d9ef',
+  highlightTextColor: 'black',
+  sections: [{
+    items: [{
+      title: 'Add Cup'
+    }, {
+      title: stringedWater()
+    }, {
+      title: 'Subtract Cup'
+    }]
+  }]
+});
+
+var getUp = new UI.Card({
+  title: 'Get up every hour :)', 
+  subtitle: 'Click the middle button to start it'
+});
+
+// Functions
 function stringedWater(){
   var wa = waterAmount.toString();
   return (wa + ' cups of water today');
@@ -96,10 +123,14 @@ function clearWakeup(elementName) {
   switch(elementName) {
     case 'Pomodoro':
       pomodoroWakeup = 0;
+      pomodoro.subtitle('Click the middle button to start');
+      pomodoro.body('');
       wakeElement = 'pomodoroWakeupId';
       break;
     case 'GetUp':
       getUpWakeup = 0;
+      getUp.subtitle('Click the middle button to start');
+      getUp.body('');
       wakeElement = 'getUpWakeupId';
       break;
     case 'Small':
@@ -116,13 +147,11 @@ function clearWakeup(elementName) {
 }
 
 function timer(constantTime, element, elementName) {
-  if (checkWakeup(elementName) === 0) {
-    createWakeup(constantTime, elementName);
-  }
   setTimeout(function (){
     var secondsLeft = wakeupSeconds(elementName);
     if (secondsLeft > 0) {
       element.subtitle(Math.floor(secondsLeft / 60).toString() + ' minutes left');
+      element.body('Click the middle button to stop');
       timer(constantTime, element, elementName);
     }
   }, 1000);
@@ -146,32 +175,6 @@ var main = new UI.Menu({
 });
 
 main.show();
-Wakeup.cancel('all');
-
-var pomodoro = new UI.Card({
-  title: 'Pomodoro'
-});
-
-var water = new UI.Menu({
-  backgroundColor: 'black',
-  textColor: '#66d9ef',
-  highlightBackgroundColor: '#66d9ef',
-  highlightTextColor: 'black',
-  sections: [{
-    items: [{
-      title: 'Add Cup'
-    }, {
-      title: stringedWater()
-    }, {
-      title: 'Subtract Cup'
-    }]
-  }]
-});
-
-var getUp = new UI.Card({
-  title: 'Get up every hour :)', 
-  subtitle: 'Click the middle button to start it'
-});
 
 main.on('select', function(e) {
   switch(e.itemIndex) {
@@ -186,11 +189,21 @@ main.on('select', function(e) {
   }
 });
 
+getUp.on('show', function(e) {
+  if (checkWakeup('GetUp') === 0) {
+    getUp.subtitle('Click the middle button to start');
+    getUp.body('');
+  } else {
+    timer(GET_UP, getUp, 'GetUp');
+  }
+});
+
 getUp.on('click', 'select', function(e) {
   if (checkWakeup('GetUp') === 0) {
-    clearWakeup('GetUp');
+    createWakeup(GET_UP, 'GetUp');
+    timer(GET_UP, getUp, 'GetUp'); 
   } else {
-   timer(GET_UP, getUp, 'GetUp'); 
+    clearWakeup('GetUp');
   }
 });
 
@@ -208,22 +221,22 @@ water.on('select', function(e) {
   }
 });
 
-pomodoro.on('click', 'select', function(e) {
-    if (checkWakeup('Pomodoro') === 0) {
-      clearWakeup('Pomodoro');
-    } else {
-     timer(POMODORO, pomodoro, 'Pomodoro'); 
-    }
-});
-
 pomodoro.on('show', function(e) {
-  if (checkWakeup('Pomodoro') !== 0) {
-    timer(POMODORO, pomodoro, 'Pomodoro');
-    pomodoro.body('Click the middle button to stop');
-  } else {
+  if (checkWakeup('Pomodoro') === 0) {
     pomodoro.subtitle('Click the middle button to start');
     pomodoro.body('');
+  } else {
+    timer(POMODORO, pomodoro, 'Pomodoro');
   }
+});
+
+pomodoro.on('click', 'select', function(e) {
+    if (checkWakeup('Pomodoro') === 0) {
+      createWakeup(POMODORO, 'Pomodoro');
+      timer(POMODORO, pomodoro, 'Pomodoro'); 
+    } else {
+      clearWakeup('Pomodoro');
+    }
 });
 
 Wakeup.on('wakeup', function(e) {
