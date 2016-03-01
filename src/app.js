@@ -31,7 +31,7 @@ var water = new UI.Menu({
     items: [{
       title: 'Add Cup'
     }, {
-      title: stringedWater()
+      title: 'Drink 8 cups of water daily :)'
     }, {
       title: 'Subtract Cup'
     }]
@@ -45,6 +45,10 @@ var getUp = new UI.Card({
 
 // Functions
 function stringedWater(){
+  var waterDate = new Date();
+  if ((waterAmount === 0) && (localStorage.getItem('waterAmount') !== null) && (localStorage.getItem('waterDate') !== null) && (waterDate.getDate() == localStorage.getItem('waterDate'))){
+    waterAmount = localStorage.getItem('waterAmount');
+  }
   var wa = waterAmount.toString();
   return (wa + ' cups of water today');
 }
@@ -207,18 +211,26 @@ getUp.on('click', 'select', function(e) {
   }
 });
 
+water.on('show', function(e){
+   water.item(0, 1, { title: stringedWater() });
+});
+
 water.on('select', function(e) {
   switch(e.itemIndex) {
     case 0:
-      waterAmount++;
-      water.item(0, 1, { title: stringedWater() });
-      break;
-    case 1:   
+      if (waterAmount < 8) {
+        waterAmount++; 
+      }
       break;
     case 2:
-      waterAmount--;
-      water.item(0, 1, { title: stringedWater() });
+      if (waterAmount > 0) {
+        waterAmount--; 
+      }
   }
+  var waterDate = new Date();
+  localStorage.setItem("waterAmount", waterAmount);
+  localStorage.setItem("waterDate", waterDate.getDate());
+  water.item(0, 1, { title: stringedWater() });
 });
 
 pomodoro.on('show', function(e) {
