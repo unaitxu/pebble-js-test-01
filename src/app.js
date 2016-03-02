@@ -230,7 +230,11 @@ water.on('select', function(e) {
   var waterDate = new Date();
   localStorage.setItem("waterAmount", waterAmount);
   localStorage.setItem("waterDate", waterDate.getDate());
-  water.item(0, 1, { title: stringedWater() });
+  if (waterAmount == 8) {
+    water.item(0, 1, { title: 'Challenge completed!' });
+  } else {
+    water.item(0, 1, { title: stringedWater() }); 
+  }
 });
 
 pomodoro.on('show', function(e) {
