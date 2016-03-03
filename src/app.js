@@ -211,6 +211,14 @@ getUp.on('click', 'select', function(e) {
   }
 });
 
+getUp.on('longClick', 'select', function(e) {
+  getUp.title('So long');
+  setTimeout(function() {
+    getUp.title('Get up every hour :)');
+  },3000);
+});
+
+
 water.on('show', function(e){
    water.item(0, 1, { title: stringedWater() });
 });
@@ -253,6 +261,13 @@ pomodoro.on('click', 'select', function(e) {
     } else {
       clearWakeup('Pomodoro');
     }
+});
+
+pomodoro.on('longClick', 'select', function(e) {
+  pomodoro.title('Much long');
+  setTimeout(function() {
+    pomodoro.title('Pomodoro');
+  },3000);
 });
 
 Wakeup.on('wakeup', function(e) {
