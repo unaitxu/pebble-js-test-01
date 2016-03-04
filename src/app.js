@@ -139,10 +139,14 @@ function clearWakeup(elementName) {
       break;
     case 'Small':
       smallBreakWakeup = 0;
+      pomodoro.subtitle('Click the middle button to start');
+      pomodoro.body('');
       wakeElement = 'smallBreakWakeupId';
       break;
     case 'Long':
       longBreakWakeup = 0;
+      getUp.subtitle('Click the middle button to start');
+      getUp.body('');
       wakeElement = 'longBreakWakeupId';
       break;
   }
@@ -194,9 +198,11 @@ main.on('select', function(e) {
 });
 
 getUp.on('show', function(e) {
-  if (checkWakeup('GetUp') === 0) {
+  if ((checkWakeup('GetUp') === 0) && (checkWakeup('LongBreak') === 0)) {
     getUp.subtitle('Click the middle button to start');
     getUp.body('');
+  } else if ((checkWakeup('GetUp') === 0) && (checkWakeup('LongBreak') !== 0)) {
+    timer(LONG_BREAK, getUp, 'LongBreak');
   } else {
     timer(GET_UP, getUp, 'GetUp');
   }
@@ -212,10 +218,12 @@ getUp.on('click', 'select', function(e) {
 });
 
 getUp.on('longClick', 'select', function(e) {
-  getUp.title('So long');
-  setTimeout(function() {
-    getUp.title('Get up every hour :)');
-  },3000);
+  if (checkWakeup('LongBreak') === 0) {
+    createWakeup(LONG_BREAK, 'LongBreak');
+    timer(LONG_BREAK, getUp, 'LongBreak'); 
+  } else {
+    clearWakeup('LongBreak');
+  }
 });
 
 
@@ -246,28 +254,32 @@ water.on('select', function(e) {
 });
 
 pomodoro.on('show', function(e) {
-  if (checkWakeup('Pomodoro') === 0) {
+  if ((checkWakeup('Pomodoro') === 0) && (checkWakeup('SmallBreak') === 0)) {
     pomodoro.subtitle('Click the middle button to start');
     pomodoro.body('');
+  } else if ((checkWakeup('Pomodoro') === 0) && (checkWakeup('SmallBreak') !== 0)) {
+    timer(SMALL_BREAK, pomodoro, 'SmallBreak');
   } else {
     timer(POMODORO, pomodoro, 'Pomodoro');
   }
 });
 
 pomodoro.on('click', 'select', function(e) {
-    if (checkWakeup('Pomodoro') === 0) {
-      createWakeup(POMODORO, 'Pomodoro');
-      timer(POMODORO, pomodoro, 'Pomodoro'); 
-    } else {
-      clearWakeup('Pomodoro');
-    }
+  if (checkWakeup('Pomodoro') === 0) {
+    createWakeup(POMODORO, 'Pomodoro');
+    timer(POMODORO, pomodoro, 'Pomodoro'); 
+  } else {
+    clearWakeup('Pomodoro');
+  }
 });
 
 pomodoro.on('longClick', 'select', function(e) {
-  pomodoro.title('Much long');
-  setTimeout(function() {
-    pomodoro.title('Pomodoro');
-  },3000);
+  if (checkWakeup('SmallBreak') === 0) {
+    createWakeup(SMALL_BREAK, 'SmallBreak');
+    timer(SMALL_BREAK, pomodoro, 'SmallBreak'); 
+  } else {
+    clearWakeup('SmallBreak');
+  }
 });
 
 Wakeup.on('wakeup', function(e) {
@@ -288,10 +300,14 @@ Wakeup.on('wakeup', function(e) {
     case 'Small':
       smallBreakWakeup = 0;
       localStorage.removeItem("smallBreakWakeupId");
+      pomodoro.subtitle('Finished at: ' + Date(e.time));
+      pomodoro.show();
       break;
     case 'Long':
       longBreakWakeup = 0;
       localStorage.removeItem("longBreakWakeupId");
+      getUp.subtitle('Finished at: ' + Date(e.time));
+      getUp.show();
       break;
   }
 });
