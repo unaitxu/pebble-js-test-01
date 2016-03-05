@@ -19,7 +19,8 @@ var longBreakWakeup = 0;
 // UI Variables
 
 var pomodoro = new UI.Card({
-  title: 'Pomodoro'
+  title: 'Pomodoro',
+  subtitle: 'Click the middle button to start it'
 });
 
 var water = new UI.Menu({
