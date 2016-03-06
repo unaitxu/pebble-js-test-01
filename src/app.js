@@ -5,7 +5,7 @@ var Wakeup = require('wakeup');
 
 // Constants
 const POMODORO = 25;
-const GET_UP = 60;
+const GET_UP = 55;
 const SMALL_BREAK = 5;
 const LONG_BREAK = 15;
 
@@ -123,34 +123,28 @@ function wakeupSeconds(elementName) {
   }
 }
 
-function clearWakeup(elementName) {
+function clearWakeup(elementName, element) {
   var wakeElement = '';
   switch(elementName) {
     case 'Pomodoro':
       pomodoroWakeup = 0;
-      pomodoro.subtitle('Click the middle button to start');
-      pomodoro.body('');
       wakeElement = 'pomodoroWakeupId';
       break;
     case 'GetUp':
       getUpWakeup = 0;
-      getUp.subtitle('Click the middle button to start');
-      getUp.body('');
       wakeElement = 'getUpWakeupId';
       break;
     case 'Small':
       smallBreakWakeup = 0;
-      pomodoro.subtitle('Click the middle button to start');
-      pomodoro.body('');
       wakeElement = 'smallBreakWakeupId';
       break;
     case 'Long':
       longBreakWakeup = 0;
-      getUp.subtitle('Click the middle button to start');
-      getUp.body('');
       wakeElement = 'longBreakWakeupId';
       break;
   }
+  element.subtitle('Click the middle button to start');
+  element.body('');
   Wakeup.cancel(localStorage.getItem(wakeElement));
   localStorage.removeItem(wakeElement);
 }
@@ -214,7 +208,7 @@ getUp.on('click', 'select', function(e) {
     createWakeup(GET_UP, 'GetUp');
     timer(GET_UP, getUp, 'GetUp'); 
   } else {
-    clearWakeup('GetUp');
+    clearWakeup('GetUp', getUp);
   }
 });
 
@@ -223,7 +217,7 @@ getUp.on('longClick', 'select', function(e) {
     createWakeup(LONG_BREAK, 'LongBreak');
     timer(LONG_BREAK, getUp, 'LongBreak'); 
   } else {
-    clearWakeup('LongBreak');
+    clearWakeup('LongBreak', getUp);
   }
 });
 
@@ -270,7 +264,7 @@ pomodoro.on('click', 'select', function(e) {
     createWakeup(POMODORO, 'Pomodoro');
     timer(POMODORO, pomodoro, 'Pomodoro'); 
   } else {
-    clearWakeup('Pomodoro');
+    clearWakeup('Pomodoro', pomodoro);
   }
 });
 
@@ -279,7 +273,7 @@ pomodoro.on('longClick', 'select', function(e) {
     createWakeup(SMALL_BREAK, 'SmallBreak');
     timer(SMALL_BREAK, pomodoro, 'SmallBreak'); 
   } else {
-    clearWakeup('SmallBreak');
+    clearWakeup('SmallBreak', pomodoro);
   }
 });
 
